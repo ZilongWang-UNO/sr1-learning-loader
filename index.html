@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260614-31" />
+    <link rel="stylesheet" href="styles.css?v=20260614-32" />
   </head>
   <body>
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
@@ -272,14 +272,21 @@
                 <span class="garden-loading-copy" role="status" aria-live="polite">
                   Lesson loading...
                 </span>
-                <button class="watch-video-button" id="watch-video-button" type="button" hidden>
+                <a
+                  class="watch-video-button"
+                  id="watch-video-button"
+                  href="https://www.youtube.com/watch?v=oJFLO-0cZr0"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  hidden
+                >
                   <span class="watch-play-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24">
                       <path d="m9 7 8 5-8 5z" />
                     </svg>
                   </span>
                   <span id="watch-video-label">Play lesson video</span>
-                </button>
+                </a>
                 <div
                   class="video-loading-track"
                   role="progressbar"
@@ -339,6 +346,6 @@
       </div>
     </div>
 
-    <script type="module" src="script.js?v=20260614-31"></script>
+    <script type="module" src="script.js?v=20260614-32"></script>
   </body>
 </html>

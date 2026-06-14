@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-31";
+import { topics } from "./topics.js?v=20260614-32";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -265,7 +265,7 @@ function prepareDiscovery() {
   upNextBar.classList.remove("is-ready");
   watchVideoButton.hidden = true;
   watchVideoLabel.textContent = isMobileDevice()
-    ? "Open video player"
+    ? "Watch on YouTube"
     : "Play lesson video";
 
   window.requestAnimationFrame(() => {
@@ -273,36 +273,42 @@ function prepareDiscovery() {
   });
 }
 
-function loadVideo() {
+function loadVideo(event) {
   const iframe = document.createElement("iframe");
   const mobilePlayback = mobilePlayerSessionActive || isMobileDevice();
+
+  window.speechSynthesis?.cancel();
+  lessonNote.classList.remove("is-pending");
+  lessonNote.setAttribute("aria-hidden", "false");
+  completeButton.disabled = false;
+
+  if (mobilePlayback) {
+    return;
+  }
+
+  event.preventDefault();
   const playerParams = new URLSearchParams({
-    autoplay: mobilePlayback ? "0" : "1",
+    autoplay: "1",
     rel: "0",
     hl: "en",
+    playsinline: "1",
   });
-
-  playerParams.set("playsinline", mobilePlayback ? "0" : "1");
 
   lessonVideoActive = true;
   mobilePlayerSessionActive = false;
   syncMobileViewportLayout();
 
   iframe.src =
-    `https://www.youtube-nocookie.com/embed/oJFLO-0cZr0?${playerParams}`;
+    `https://www.youtube.com/embed/oJFLO-0cZr0?${playerParams}`;
   iframe.title = "We Are SR1!";
   iframe.allow =
     "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
   iframe.referrerPolicy = "strict-origin-when-cross-origin";
   iframe.allowFullscreen = true;
 
-  window.speechSynthesis?.cancel();
   loadingShell.hidden = true;
   videoFrame.classList.remove("is-loading");
   videoFrame.appendChild(iframe);
-  lessonNote.classList.remove("is-pending");
-  lessonNote.setAttribute("aria-hidden", "false");
-  completeButton.disabled = false;
 }
 
 function startVideoLoading() {
