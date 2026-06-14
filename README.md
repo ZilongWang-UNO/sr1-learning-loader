@@ -62,8 +62,8 @@ script.js    Loading sequence, narration, topic rotation, and interactions
 
 No package installation or build step is required.
 
-On mobile, a landscape button requests orientation locking when the browser
-supports it. iPhone browsers show a clear rotate-device prompt instead, because
-ordinary web pages cannot force iOS to rotate. Mobile video playback starts
-muted so Safari and Chrome can autoplay it reliably; students can restore sound
-with the YouTube controls.
+On mobile, starting the lesson requests full-screen landscape mode for the
+entire player, so the discovery and lesson video share the same immersive
+surface. Android browsers generally support this flow. iPhone browsers may
+require the student to rotate the device or use YouTube's full-screen control,
+so the prototype provides a clear fallback prompt.

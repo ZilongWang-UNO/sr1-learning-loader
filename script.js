@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-22";
+import { topics } from "./topics.js?v=20260614-23";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -13,7 +13,6 @@ const lessonProgressCopy = document.querySelector("#lesson-progress-copy");
 const lessonProgressFill = document.querySelector("#lesson-progress-fill");
 const lessonPanel = document.querySelector(".lesson-panel");
 const lessonNote = document.querySelector(".lesson-note");
-const lessonNoteCopy = lessonNote.querySelector("p");
 const videoFrame = document.querySelector("#video-frame");
 const videoPoster = document.querySelector("#video-poster");
 const loadingShell = document.querySelector("#loading-shell");
@@ -39,27 +38,15 @@ let activeUtterance;
 let narrationText = "";
 let narrationOffset = 0;
 let narrationGeneration = 0;
-const compactScreen = window.matchMedia("(max-width: 640px)");
 
-async function requestMobileLandscape() {
-  if (!compactScreen.matches) {
-    return false;
-  }
-
-  const lockOrientation = window.screen?.orientation?.lock;
-  if (typeof lockOrientation !== "function") {
-    return false;
-  }
-
-  try {
-    await lockOrientation.call(window.screen.orientation, "landscape");
-    return true;
-  } catch {
-    return false;
+function showOrientationFallback() {
+  if (window.matchMedia("(orientation: portrait)").matches) {
+    orientationHint.hidden = false;
+    orientationHintClose.focus({ preventScroll: true });
   }
 }
 
-function isMobilePlayback() {
+function isMobileDevice() {
   const mobileUserAgent =
     /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -70,6 +57,41 @@ function isMobilePlayback() {
       Math.min(window.screen?.width || window.innerWidth, window.innerWidth) <=
         1024)
   );
+}
+
+async function enterMobilePlayerMode() {
+  if (!isMobileDevice()) {
+    return true;
+  }
+
+  const requestFullscreen =
+    videoFrame.requestFullscreen?.bind(videoFrame) ||
+    videoFrame.webkitRequestFullscreen?.bind(videoFrame);
+
+  if (!requestFullscreen) {
+    showOrientationFallback();
+    return false;
+  }
+
+  try {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      await requestFullscreen();
+    }
+
+    const lockOrientation = window.screen?.orientation?.lock;
+    if (typeof lockOrientation === "function") {
+      try {
+        await lockOrientation.call(window.screen.orientation, "landscape");
+      } catch {
+        showOrientationFallback();
+      }
+    }
+
+    return true;
+  } catch {
+    showOrientationFallback();
+    return false;
+  }
 }
 
 function closeOrientationHint() {
@@ -253,17 +275,12 @@ function prepareDiscovery() {
 
 function loadVideo() {
   const iframe = document.createElement("iframe");
-  const mobilePlayback = isMobilePlayback();
   const playerParams = new URLSearchParams({
     autoplay: "1",
     rel: "0",
     hl: "en",
     playsinline: "1",
   });
-
-  if (mobilePlayback) {
-    playerParams.set("mute", "1");
-  }
 
   iframe.src =
     `https://www.youtube-nocookie.com/embed/oJFLO-0cZr0?${playerParams}`;
@@ -279,16 +296,13 @@ function loadVideo() {
   videoFrame.appendChild(iframe);
   lessonNote.classList.remove("is-pending");
   lessonNote.setAttribute("aria-hidden", "false");
-  if (mobilePlayback) {
-    lessonNoteCopy.innerHTML =
-      "<strong>Video started muted:</strong> Tap the player speaker for sound.";
-  }
   completeButton.disabled = false;
 }
 
 function startVideoLoading() {
   const startedAt = performance.now();
 
+  void enterMobilePlayerMode();
   videoPoster.hidden = true;
   loadingShell.hidden = false;
   videoFrame.classList.add("is-loading");
@@ -398,12 +412,7 @@ narrationButton.addEventListener("click", () => {
 });
 
 orientationButton.addEventListener("click", async () => {
-  const locked = await requestMobileLandscape();
-
-  if (!locked && window.matchMedia("(orientation: portrait)").matches) {
-    orientationHint.hidden = false;
-    orientationHintClose.focus({ preventScroll: true });
-  }
+  await enterMobilePlayerMode();
 });
 
 orientationHintClose.addEventListener("click", closeOrientationHint);
@@ -422,6 +431,15 @@ window.addEventListener("orientationchange", () => {
     }, 200);
   }
 });
+
+function handleFullscreenChange() {
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    window.screen?.orientation?.unlock?.();
+  }
+}
+
+document.addEventListener("fullscreenchange", handleFullscreenChange);
+document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
 
 completeButton.addEventListener("click", () => {
   currentLesson.classList.remove("current");
