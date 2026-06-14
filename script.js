@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-27";
+import { topics } from "./topics.js?v=20260614-28";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -75,15 +75,13 @@ function closeOrientationModal({ restoreFocus = false } = {}) {
   }
 }
 
-function enterMobileViewportPlayer() {
-  mobilePlayerSessionActive = true;
-  document.body.classList.add("mobile-player-open");
-  videoFrame.classList.add("is-mobile-player");
-}
+function syncMobileViewportLayout() {
+  const useLandscapePlayer =
+    mobilePlayerSessionActive &&
+    window.matchMedia("(orientation: landscape)").matches;
 
-function leaveMobileViewportLayout() {
-  document.body.classList.remove("mobile-player-open");
-  videoFrame.classList.remove("is-mobile-player");
+  document.body.classList.toggle("mobile-player-open", useLandscapePlayer);
+  videoFrame.classList.toggle("is-mobile-player", useLandscapePlayer);
 }
 
 function enterMobilePlayerMode() {
@@ -91,7 +89,8 @@ function enterMobilePlayerMode() {
     return true;
   }
 
-  enterMobileViewportPlayer();
+  mobilePlayerSessionActive = true;
+  syncMobileViewportLayout();
   return true;
 }
 
@@ -271,11 +270,12 @@ function prepareDiscovery() {
 
 function loadVideo() {
   const iframe = document.createElement("iframe");
+  const mobilePlayback = mobilePlayerSessionActive || isMobileDevice();
   const playerParams = new URLSearchParams({
     autoplay: "1",
     rel: "0",
     hl: "en",
-    playsinline: "1",
+    playsinline: mobilePlayback ? "0" : "1",
   });
 
   iframe.src =
@@ -435,17 +435,7 @@ orientationHint.addEventListener("keydown", (event) => {
 });
 
 function handleMobileOrientationChange() {
-  if (!mobilePlayerSessionActive) {
-    return;
-  }
-
-  if (window.matchMedia("(orientation: landscape)").matches) {
-    document.body.classList.add("mobile-player-open");
-    videoFrame.classList.add("is-mobile-player");
-    return;
-  }
-
-  leaveMobileViewportLayout();
+  syncMobileViewportLayout();
 }
 
 window.addEventListener("orientationchange", handleMobileOrientationChange);
