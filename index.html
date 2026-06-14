@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260614-24" />
+    <link rel="stylesheet" href="styles.css?v=20260614-25" />
   </head>
   <body>
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
@@ -202,26 +202,6 @@
             </button>
 
             <div
-              class="orientation-hint"
-              id="orientation-hint"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="orientation-hint-title"
-              hidden
-            >
-              <div class="orientation-hint-card">
-                <svg class="rotate-phone" viewBox="0 0 64 64" aria-hidden="true">
-                  <rect x="23" y="8" width="20" height="36" rx="5" />
-                  <path d="M12 28a23 23 0 0 0 38 18" />
-                  <path d="m9 20 3 8 8-3" />
-                </svg>
-                <strong id="orientation-hint-title">Turn your phone sideways</strong>
-                <span>Then continue to start your Quick Discovery.</span>
-                <button id="orientation-hint-close" type="button">Continue</button>
-              </div>
-            </div>
-
-            <div
               class="loading-shell"
               id="loading-shell"
               hidden
@@ -336,6 +316,29 @@
       </div>
     </main>
 
-    <script type="module" src="script.js?v=20260614-24"></script>
+    <div
+      class="orientation-hint"
+      id="orientation-hint"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="orientation-hint-title"
+      aria-describedby="orientation-hint-description"
+      hidden
+    >
+      <div class="orientation-hint-card">
+        <svg class="rotate-phone" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="23" y="8" width="20" height="36" rx="5" />
+          <path d="M12 28a23 23 0 0 0 38 18" />
+          <path d="m9 20 3 8 8-3" />
+        </svg>
+        <strong id="orientation-hint-title">Turn your phone sideways</strong>
+        <span id="orientation-hint-description">
+          Then continue to start your Quick Discovery.
+        </span>
+        <button id="orientation-hint-close" type="button">Continue</button>
+      </div>
+    </div>
+
+    <script type="module" src="script.js?v=20260614-25"></script>
   </body>
 </html>

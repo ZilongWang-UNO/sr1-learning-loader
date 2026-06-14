@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-24";
+import { topics } from "./topics.js?v=20260614-25";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -25,6 +25,8 @@ const discoveryCaptions = [...document.querySelectorAll(".discovery-caption")];
 const narrationButton = document.querySelector("#narration-button");
 const orientationHint = document.querySelector("#orientation-hint");
 const orientationHintClose = document.querySelector("#orientation-hint-close");
+const siteHeader = document.querySelector(".site-header");
+const mainContent = document.querySelector("main");
 const watchVideoButton = document.querySelector("#watch-video-button");
 const upNextBar = document.querySelector(".up-next-bar");
 const loadingDuration = 20_000;
@@ -51,6 +53,25 @@ function isMobileDevice() {
       Math.min(window.screen?.width || window.innerWidth, window.innerWidth) <=
         1024)
   );
+}
+
+function openOrientationModal() {
+  orientationHint.hidden = false;
+  document.body.classList.add("modal-open");
+  siteHeader.inert = true;
+  mainContent.inert = true;
+  orientationHintClose.focus({ preventScroll: true });
+}
+
+function closeOrientationModal({ restoreFocus = false } = {}) {
+  orientationHint.hidden = true;
+  document.body.classList.remove("modal-open");
+  siteHeader.inert = false;
+  mainContent.inert = false;
+
+  if (restoreFocus) {
+    videoPoster.focus({ preventScroll: true });
+  }
 }
 
 async function enterMobilePlayerMode() {
@@ -391,8 +412,7 @@ videoPoster.addEventListener(
   "click",
   () => {
     if (isMobileDevice()) {
-      orientationHint.hidden = false;
-      orientationHintClose.focus({ preventScroll: true });
+      openOrientationModal();
       return;
     }
 
@@ -414,8 +434,14 @@ narrationButton.addEventListener("click", () => {
 
 orientationHintClose.addEventListener("click", async () => {
   await enterMobilePlayerMode();
-  orientationHint.hidden = true;
+  closeOrientationModal();
   startVideoLoading();
+});
+
+orientationHint.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeOrientationModal({ restoreFocus: true });
+  }
 });
 
 window.addEventListener("orientationchange", () => {
