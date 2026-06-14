@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-25";
+import { topics } from "./topics.js?v=20260614-26";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -40,6 +40,7 @@ let narrationText = "";
 let narrationOffset = 0;
 let narrationGeneration = 0;
 let loadingStarted = false;
+let mobilePlayerSawLandscape = false;
 
 function isMobileDevice() {
   const mobileUserAgent =
@@ -74,10 +75,24 @@ function closeOrientationModal({ restoreFocus = false } = {}) {
   }
 }
 
+function enterMobileViewportPlayer() {
+  mobilePlayerSawLandscape = window.matchMedia("(orientation: landscape)").matches;
+  document.body.classList.add("mobile-player-open");
+  videoFrame.classList.add("is-mobile-player");
+}
+
+function exitMobileViewportPlayer() {
+  mobilePlayerSawLandscape = false;
+  document.body.classList.remove("mobile-player-open");
+  videoFrame.classList.remove("is-mobile-player");
+}
+
 async function enterMobilePlayerMode() {
   if (!isMobileDevice()) {
     return true;
   }
+
+  enterMobileViewportPlayer();
 
   const requestFullscreen =
     videoFrame.requestFullscreen?.bind(videoFrame) ||
@@ -444,8 +459,13 @@ orientationHint.addEventListener("keydown", (event) => {
   }
 });
 
-window.addEventListener("orientationchange", () => {
+function handleMobileOrientationChange() {
+  if (!videoFrame.classList.contains("is-mobile-player")) {
+    return;
+  }
+
   if (window.matchMedia("(orientation: landscape)").matches) {
+    mobilePlayerSawLandscape = true;
     window.setTimeout(() => {
       videoFrame.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -454,8 +474,20 @@ window.addEventListener("orientationchange", () => {
         block: "center",
       });
     }, 200);
+    return;
   }
-});
+
+  if (
+    mobilePlayerSawLandscape &&
+    !document.fullscreenElement &&
+    !document.webkitFullscreenElement
+  ) {
+    exitMobileViewportPlayer();
+  }
+}
+
+window.addEventListener("orientationchange", handleMobileOrientationChange);
+window.addEventListener("resize", handleMobileOrientationChange);
 
 function handleFullscreenChange() {
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
