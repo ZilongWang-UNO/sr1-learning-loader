@@ -1162,6 +1162,13 @@ svg {
   font-weight: 700;
 }
 
+.leaf-art .visual-note {
+  font-family: "Nunito", Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
 .note-arrow {
   fill: none;
   stroke: var(--garden-blue-dark);
