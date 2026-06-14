@@ -1,4 +1,4 @@
-import { topics } from "./topics.js?v=20260614-23";
+import { topics } from "./topics.js?v=20260614-24";
 
 const menuButton = document.querySelector(".menu-button");
 const mobileNavigation = document.querySelector("#mobile-navigation");
@@ -23,7 +23,6 @@ const discoveryTitle = document.querySelector("#discovery-title");
 const discoveryVisual = document.querySelector("#discovery-visual");
 const discoveryCaptions = [...document.querySelectorAll(".discovery-caption")];
 const narrationButton = document.querySelector("#narration-button");
-const orientationButton = document.querySelector("#orientation-button");
 const orientationHint = document.querySelector("#orientation-hint");
 const orientationHintClose = document.querySelector("#orientation-hint-close");
 const watchVideoButton = document.querySelector("#watch-video-button");
@@ -38,13 +37,7 @@ let activeUtterance;
 let narrationText = "";
 let narrationOffset = 0;
 let narrationGeneration = 0;
-
-function showOrientationFallback() {
-  if (window.matchMedia("(orientation: portrait)").matches) {
-    orientationHint.hidden = false;
-    orientationHintClose.focus({ preventScroll: true });
-  }
-}
+let loadingStarted = false;
 
 function isMobileDevice() {
   const mobileUserAgent =
@@ -53,6 +46,7 @@ function isMobileDevice() {
 
   return (
     mobileUserAgent ||
+    window.innerWidth <= 640 ||
     (window.matchMedia("(pointer: coarse)").matches &&
       Math.min(window.screen?.width || window.innerWidth, window.innerWidth) <=
         1024)
@@ -69,7 +63,6 @@ async function enterMobilePlayerMode() {
     videoFrame.webkitRequestFullscreen?.bind(videoFrame);
 
   if (!requestFullscreen) {
-    showOrientationFallback();
     return false;
   }
 
@@ -82,21 +75,13 @@ async function enterMobilePlayerMode() {
     if (typeof lockOrientation === "function") {
       try {
         await lockOrientation.call(window.screen.orientation, "landscape");
-      } catch {
-        showOrientationFallback();
-      }
+      } catch {}
     }
 
     return true;
   } catch {
-    showOrientationFallback();
     return false;
   }
-}
-
-function closeOrientationHint() {
-  orientationHint.hidden = true;
-  orientationButton.focus({ preventScroll: true });
 }
 
 function continueNarration() {
@@ -300,9 +285,13 @@ function loadVideo() {
 }
 
 function startVideoLoading() {
+  if (loadingStarted) {
+    return;
+  }
+
+  loadingStarted = true;
   const startedAt = performance.now();
 
-  void enterMobilePlayerMode();
   videoPoster.hidden = true;
   loadingShell.hidden = false;
   videoFrame.classList.add("is-loading");
@@ -398,7 +387,19 @@ menuButton.addEventListener("click", () => {
   mobileNavigation.hidden = isOpen;
 });
 
-videoPoster.addEventListener("click", startVideoLoading, { once: true });
+videoPoster.addEventListener(
+  "click",
+  () => {
+    if (isMobileDevice()) {
+      orientationHint.hidden = false;
+      orientationHintClose.focus({ preventScroll: true });
+      return;
+    }
+
+    startVideoLoading();
+  },
+  { once: true },
+);
 watchVideoButton.addEventListener("click", loadVideo, { once: true });
 
 narrationButton.addEventListener("click", () => {
@@ -411,16 +412,14 @@ narrationButton.addEventListener("click", () => {
   updateNarrationVolume();
 });
 
-orientationButton.addEventListener("click", async () => {
+orientationHintClose.addEventListener("click", async () => {
   await enterMobilePlayerMode();
+  orientationHint.hidden = true;
+  startVideoLoading();
 });
-
-orientationHintClose.addEventListener("click", closeOrientationHint);
 
 window.addEventListener("orientationchange", () => {
   if (window.matchMedia("(orientation: landscape)").matches) {
-    orientationHint.hidden = true;
-
     window.setTimeout(() => {
       videoFrame.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches

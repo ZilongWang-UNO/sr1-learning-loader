@@ -712,13 +712,6 @@ svg {
   font-weight: 700;
 }
 
-.prelesson-actions {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.orientation-button,
 .narration-button {
   display: inline-flex;
   align-items: center;
@@ -736,18 +729,11 @@ svg {
   font-weight: 900;
 }
 
-.orientation-button {
-  display: none;
-}
-
-.orientation-button:hover,
-.orientation-button:focus-visible,
 .narration-button:hover,
 .narration-button:focus-visible {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.orientation-button svg,
 .narration-button svg {
   width: 16px;
 }
@@ -2003,10 +1989,6 @@ a:focus-visible {
     font-size: 11px;
   }
 
-  .orientation-button {
-    display: inline-flex;
-  }
-
   .up-next-bar {
     min-height: 58px;
     flex-basis: 58px;
@@ -2112,10 +2094,6 @@ a:focus-visible {
     height: calc(100svh - 12px);
     max-height: 430px;
     aspect-ratio: auto;
-  }
-
-  .orientation-button {
-    display: none;
   }
 
   .video-frame.is-loading .garden-book {

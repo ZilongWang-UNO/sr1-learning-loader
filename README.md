@@ -62,8 +62,8 @@ script.js    Loading sequence, narration, topic rotation, and interactions
 
 No package installation or build step is required.
 
-On mobile, starting the lesson requests full-screen landscape mode for the
-entire player, so the discovery and lesson video share the same immersive
-surface. Android browsers generally support this flow. iPhone browsers may
-require the student to rotate the device or use YouTube's full-screen control,
-so the prototype provides a clear fallback prompt.
+On mobile, selecting the lesson first pauses at a rotate-device prompt. The
+20-second discovery begins only after the student confirms. The player then
+requests full-screen landscape mode so the discovery and lesson video share the
+same immersive surface. Android browsers generally support the automatic
+transition; iPhone browsers may require the student to rotate manually.

@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260614-23" />
+    <link rel="stylesheet" href="styles.css?v=20260614-24" />
   </head>
   <body>
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
@@ -202,6 +202,26 @@
             </button>
 
             <div
+              class="orientation-hint"
+              id="orientation-hint"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="orientation-hint-title"
+              hidden
+            >
+              <div class="orientation-hint-card">
+                <svg class="rotate-phone" viewBox="0 0 64 64" aria-hidden="true">
+                  <rect x="23" y="8" width="20" height="36" rx="5" />
+                  <path d="M12 28a23 23 0 0 0 38 18" />
+                  <path d="m9 20 3 8 8-3" />
+                </svg>
+                <strong id="orientation-hint-title">Turn your phone sideways</strong>
+                <span>Then continue to start your Quick Discovery.</span>
+                <button id="orientation-hint-close" type="button">Continue</button>
+              </div>
+            </div>
+
+            <div
               class="loading-shell"
               id="loading-shell"
               hidden
@@ -211,53 +231,19 @@
                   <span class="prelesson-dot" aria-hidden="true"></span>
                   <strong>Quick Discovery</strong>
                 </div>
-                <div class="prelesson-actions">
-                  <button
-                    class="orientation-button"
-                    id="orientation-button"
-                    type="button"
-                    aria-label="Enter full screen landscape"
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="8" y="3" width="8" height="14" rx="2" />
-                      <path d="M5 8a8 8 0 0 0 11 10" />
-                      <path d="m4 5 1 3 3-1" />
-                    </svg>
-                  </button>
-                  <button
-                    class="narration-button"
-                    id="narration-button"
-                    type="button"
-                    aria-pressed="true"
-                    aria-label="Mute narration"
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M11 5 6.5 9H3v6h3.5l4.5 4z" />
-                      <path class="sound-waves" d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" />
-                      <path class="sound-slash" d="m4 4 16 16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div
-                class="orientation-hint"
-                id="orientation-hint"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="orientation-hint-title"
-                hidden
-              >
-                <div class="orientation-hint-card">
-                  <svg class="rotate-phone" viewBox="0 0 64 64" aria-hidden="true">
-                    <rect x="23" y="8" width="20" height="36" rx="5" />
-                    <path d="M12 28a23 23 0 0 0 38 18" />
-                    <path d="m9 20 3 8 8-3" />
+                <button
+                  class="narration-button"
+                  id="narration-button"
+                  type="button"
+                  aria-pressed="true"
+                  aria-label="Mute narration"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M11 5 6.5 9H3v6h3.5l4.5 4z" />
+                    <path class="sound-waves" d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" />
+                    <path class="sound-slash" d="m4 4 16 16" />
                   </svg>
-                  <strong id="orientation-hint-title">Turn your phone sideways</strong>
-                  <span>Your browser needs you to rotate the phone manually.</span>
-                  <button id="orientation-hint-close" type="button">Continue</button>
-                </div>
+                </button>
               </div>
 
               <div class="garden-book">
@@ -350,6 +336,6 @@
       </div>
     </main>
 
-    <script type="module" src="script.js?v=20260614-23"></script>
+    <script type="module" src="script.js?v=20260614-24"></script>
   </body>
 </html>
